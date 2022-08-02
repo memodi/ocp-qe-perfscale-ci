@@ -37,7 +37,7 @@ pipeline {
             max-namespaces: This will export NAMESPACE_COUNT env variable; set to ~30 * num_workers. The number of namespaces created by Kube-burner.  <br>
             max-services: This will export SERVICE_COUNT env variable; set to 200 * num_workers, work up to 250 * num_workers. Creates n-replicas of an application deployment (hello-openshift) and a service in a single namespace.  <br>
             node-density: This will export PODS_PER_NODE env variable; set to 200, work up to 250. Creates as many "sleep" pods as configured in this variable - existing number of pods on node. <br>
-            node-density-heavy: This will export PODS_PER_NODE env variable; set to 200, work up to 250. Creates this number of applications proportional to the calculated number of pods / 2 <br>
+            node-density-heavy*: This will export PODS_PER_NODE env variable; set to 200, work up to 250. Creates this number of applications proportional to the calculated number of pods / 2 <br>
             Read here for detail of each variable: <br>
             https://github.com/cloud-bulldozer/e2e-benchmarking/blob/master/workloads/kube-burner/README.md <br>
             ''')
@@ -147,7 +147,7 @@ pipeline {
                       export NAMESPACE_COUNT=$VARIABLE
                     elif [[ $WORKLOAD == "max-services" ]]; then
                       export SERVICE_COUNT=$VARIABLE
-                    elif [[ $WORKLOAD == "node-density" ]] || [[ $WORKLOAD == "node-density-heavy" ]]; then
+                    elif [[ $WORKLOAD =~ "node-density" ]] ; then
                       export PODS_PER_NODE=$VARIABLE
                     fi
                     set -o pipefail
@@ -190,7 +190,7 @@ pipeline {
             }
             if(params.WRITE_TO_FILE == true) {
                 def parameter_to_pass = VARIABLE
-                if (params.WORKLOAD == "node-density" || params.WORKLOAD == "node-density-heavy" ) {
+                if (params.WORKLOAD == "node-density" || params.WORKLOAD == "node-density-heavy" || params.WORKLOAD == "node-density-cni" ) {
                     parameter_to_pass += "," + NODE_COUNT
                 }
                 else if (params.WORKLOAD == "concurrent-builds" ) {
