@@ -15,7 +15,7 @@ pipeline {
 
   parameters {
         string(name: 'BUILD_NUMBER', defaultValue: '', description: 'Build number of job that has installed the cluster.')
-        choice(choices: ["cluster-density","node-density","node-density-heavy","pod-density","pod-density-heavy","max-namespaces","max-services", "concurrent-builds"], name: 'WORKLOAD', description: '''Type of kube-burner job to run''')
+        choice(choices: ["cluster-density","node-density","node-density-heavy","node-density-cni", "pod-density","pod-density-heavy","max-namespaces","max-services", "concurrent-builds"], name: 'WORKLOAD', description: '''Type of kube-burner job to run''')
         booleanParam(name: 'WRITE_TO_FILE', defaultValue: false, description: 'Value to write to google sheet (will run https://mastern-jenkins-csb-openshift-qe.apps.ocp-c1.prod.psi.redhat.com/job/scale-ci/job/e2e-benchmarking-multibranch-pipeline/job/write-scale-ci-results)')
         booleanParam(name: 'CLEANUP', defaultValue: false, description: 'Cleanup namespaces (and all sub-objects) created from workload')
         booleanParam(name: 'CERBERUS_CHECK', defaultValue: false, description: 'Check cluster health status  pass ')
