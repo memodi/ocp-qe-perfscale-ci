@@ -12,7 +12,7 @@ import jenkins
 import logging
 import argparse
 import requests
-import datetime
+from datetime import datetime, timezone
 import subprocess
 import coloredlogs
 from elasticsearch import Elasticsearch
@@ -78,7 +78,7 @@ def get_iso_timestamp(unix_timestamp):
     """takes in a unix timestamp and returns an iso timestamp representation
     iso timestamp will be Elasticsearch compatible
     """
-    return datetime.datetime.utcfromtimestamp(int(unix_timestamp)).isoformat() + "Z"
+    return datetime.utcfromtimestamp(int(unix_timestamp)).isoformat() + "Z"
 
 
 def get_epoch_from_iso(isotime):
@@ -86,10 +86,10 @@ def get_epoch_from_iso(isotime):
     Takes ISO timestamp in format '%Y-%m-%dT%H:%M:%SZ' and returns epoch seconds
     """
     utc_dt = datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%SZ").replace(
-        tzinfo=datetime.UTC
+        tzinfo=timezone.utc
     )
     timestamp = (
-        utc_dt - datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)
+        utc_dt - datetime(1970, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
     ).total_seconds()
     return int(timestamp)
 
@@ -123,7 +123,7 @@ def process_query(uuid, metric_name, query, raw_data):
                 )
 
     except Exception as e:
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.error(f"Error cleaning {metric_name} data from query {query}: {e}")
         logging.error(f"raw_data: {raw_data}")
         logging.error(
@@ -176,7 +176,7 @@ def run_commands(commands, outputs={}):
             )
 
             # record command stdout if execution was succesful
-            output = result.stdout
+            output = result.stdout.strip()
             logging.debug(f"Got back result: {output}")
 
             # if aws_s3_bucket_usage command, split up the data to two different metadata fields
@@ -257,6 +257,8 @@ def get_netobserv_env_info():
     logging.debug(f"Found collector agent {agent}")
     s3_bucket_name = info["aws_s3_bucket_name"]
     logging.debug(f"Found AWS S3 bucket name {s3_bucket_name}")
+
+    # noo_start_time could have multiple start time values if subscribed to operator more than once
     additional_commands = {
         "sampling": f'oc get flowcollector -o jsonpath="{{.items[*].spec.agent.{agent}.sampling}}"',
         "cache_active_time": f'oc get flowcollector -o jsonpath="{{.items[*].spec.agent.{agent}.cacheActiveTimeout}}"',
@@ -264,7 +266,8 @@ def get_netobserv_env_info():
         "aws_s3_bucket_usage": f"aws s3 ls --summarize --human-readable --recursive s3://{s3_bucket_name} | tail -2",
         "noo_start_time": "oc get csv/"
         + info["release"]
-        + " -o jsonpath='{.status.conditions[?(@.phase==\"Succeeded\")].lastUpdateTime}'",
+        + " -o jsonpath='{.status.conditions[?(@.phase==\"Succeeded\")].lastUpdateTime}' -n openshift-netobserv-operator"
+        + " | awk '{print $NF}'",
     }
     if deploymentModel == "kafka":
         additional_commands["kafka_replicas"] = (
@@ -537,14 +540,14 @@ def update_results_with_metrics_data(queries, start_time, end_time):
     for entry in queries:
         metric_name = entry["metricName"]
         query = entry["query"]
-        raw_data = run_query(metric_name, query, START_TIME, END_TIME)
+        raw_data = run_query(metric_name, query, start_time, end_time)
         RESULTS["prometheus_data"].append(
             {"raw_data": raw_data, "query": query, "metric_name": metric_name}
         )
 
 
 def get_prom_metrics_queries(noo_start_time):
-    seconds_elapsed_since_noo_installed = END_TIME - noo_start_time
+    seconds_elapsed_since_noo_installed = int(END_TIME) - noo_start_time
     netobserv_prom_ratio = {
         "metricName": "NetObservPromSamplesRatio",
         "query": 'sum(scrape_samples_post_metric_relabeling{namespace=~"netobserv.*"}) / sum(scrape_samples_post_metric_relabeling)',
@@ -585,18 +588,21 @@ def main():
     noo_start_time_epoch = get_epoch_from_iso(
         RESULTS["netobserv_env"]["noo_start_time"]
     )
-    prom_impact_queries = get_prom_metrics_queries(noo_start_time_epoch)
-    QUERIES.append(prom_impact_queries)
 
+    # measure prometheus impact with start time as NOO pod start time
+    prom_impact_queries = get_prom_metrics_queries(noo_start_time_epoch)
     update_results_with_metrics_data(
         prom_impact_queries, noo_start_time_epoch, END_TIME
     )
+
+    # measure other metrics with start time as workload start time
+    update_results_with_metrics_data(QUERIES, START_TIME, END_TIME)
 
     # log success if no issues
     logging.info(f"Data captured successfully")
 
     # either dump data locally or upload it to Elasticsearch
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     dump_data_locally(timestamp)
     logging.info(f"Data written to {DATA_DIR}/data_{timestamp}.json")
@@ -765,13 +771,13 @@ if __name__ == "__main__":
     else:
         logging.info(
             "Parsed Start Time: "
-            + datetime.datetime.utcfromtimestamp(int(START_TIME)).strftime(
+            + datetime.utcfromtimestamp(int(START_TIME)).strftime(
                 "%I:%M%p%Z UTC on %m/%d/%Y"
             )
         )
         logging.info(
             "Parsed End Time:   "
-            + datetime.datetime.utcfromtimestamp(int(END_TIME)).strftime(
+            + datetime.utcfromtimestamp(int(END_TIME)).strftime(
                 "%I:%M%p%Z UTC on %m/%d/%Y"
             )
         )
@@ -809,7 +815,7 @@ if __name__ == "__main__":
     else:
         UUID_REPLACEMENT_STR = f"{NOO_BUNDLE_VERSION}/{get_iso_timestamp(START_TIME)}"
 
-    UUID_REPLACEMENT_STR += "/" + JIRA if JIRA else ""
+    UUID_REPLACEMENT_STR += "/" + args.jira if args.jira else ""
 
     # determine UUID and Jira if applicable
     UUID = args.uuid

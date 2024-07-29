@@ -114,7 +114,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -147,7 +147,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -180,7 +180,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -213,7 +213,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -246,7 +246,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -272,7 +272,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },

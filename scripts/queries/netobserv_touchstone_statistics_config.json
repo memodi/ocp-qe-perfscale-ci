@@ -116,7 +116,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -149,7 +149,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -222,7 +222,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -295,7 +295,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -328,7 +328,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -500,7 +500,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -728,11 +728,11 @@
                     "metric_name.keyword": "lokiStorageUsage"
                 },
                 "buckets": [
-                    "metadata.persistentvolumeclaim.keyword"
+                    "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -741,11 +741,11 @@
                     "metric_name.keyword": "kafkaStorageUsage"
                 },
                 "buckets": [
-                    "metadata.persistentvolumeclaim.keyword"
+                    "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
-                        "max"
+                        "avg"
                     ]
                 }
             },
@@ -754,7 +754,7 @@
                     "metric_name.keyword": "prometheusEstimatedStorageUsage"
                 },
                 "buckets": [
-                    "metadata.persistentvolumeclaim.keyword"
+                    "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
@@ -785,45 +785,6 @@
                 "aggregations": {
                     "value": [
                         "avg"
-                    ]
-                }
-            },
-            {
-                "filter": {
-                    "metric_name.keyword": "lokiStorageUsage"
-                },
-                "buckets": [
-                    "metric_name.keyword"
-                ],
-                "aggregations": {
-                    "value": [
-                        "max"
-                    ]
-                }
-            },
-            {
-                "filter": {
-                    "metric_name.keyword": "kafkaStorageUsage"
-                },
-                "buckets": [
-                    "metric_name.keyword"
-                ],
-                "aggregations": {
-                    "value": [
-                        "max"
-                    ]
-                }
-            },
-            {
-                "filter": {
-                    "metric_name.keyword": "PromEstimatedStorageUsage"
-                },
-                "buckets": [
-                    "metric_name.keyword"
-                ],
-                "aggregations": {
-                    "value": [
-                        "max"
                     ]
                 }
             },
