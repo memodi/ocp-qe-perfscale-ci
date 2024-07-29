@@ -447,6 +447,26 @@
             },
             {
                 "filter": {
+                    "metric_name.keyword": "cpuPrometheusTotals"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        {
+                            "percentiles": {
+                                "percents": [
+                                    90
+                                ]
+                            }
+                        },
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
                     "metric_name.keyword": "memoryUsageRSS"
                 },
                 "buckets": [
@@ -560,6 +580,26 @@
             {
                 "filter": {
                     "metric_name.keyword": "rssLokiTotals"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        {
+                            "percentiles": {
+                                "percents": [
+                                    90
+                                ]
+                            }
+                        },
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "rssPrometheusTotals"
                 },
                 "buckets": [
                     "metric_name.keyword"
@@ -711,6 +751,19 @@
             },
             {
                 "filter": {
+                    "metric_name.keyword": "prometheusEstimatedStorageUsage"
+                },
+                "buckets": [
+                    "metadata.persistentvolumeclaim.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
                     "metric_name.keyword": "TotalNetObservCPUUsage"
                 },
                 "buckets": [
@@ -732,6 +785,45 @@
                 "aggregations": {
                     "value": [
                         "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "lokiStorageUsage"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "max"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "kafkaStorageUsage"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "max"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "PromEstimatedStorageUsage"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "max"
                     ]
                 }
             },

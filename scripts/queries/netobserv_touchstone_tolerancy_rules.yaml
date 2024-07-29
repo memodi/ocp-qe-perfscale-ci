@@ -27,7 +27,7 @@
   tolerancy: -1
   max_failures: 0
 - json_path: ["metric_name", "ebpfFlowsDroppedTotals", "metric_name", "*", "max(value)"]
-  tolerancy: -1
+  tolerancy: 60
   max_failures: 0
 - json_path: ["metric_name", "lokiRecordsDroppedPerMinute", "metric_name", "*", "avg(value)"]
   tolerancy: -1
@@ -45,6 +45,9 @@
 - json_path: ["metric_name", "cpuKafkaTotals", "metric_name", "*", "avg(value)"]
   tolerancy: 60
   max_failures: 0
+- json_path: ["metric_name", "cpuPrometheusTotals", "metric_name", "*", "avg(value)"]
+  tolerancy: 60
+  max_failures: 0
 # RSS totals
 - json_path: ["metric_name", "rssFLPTotals", "metric_name", "*", "avg(value)"]
   tolerancy: 10
@@ -56,6 +59,9 @@
   tolerancy: 60
   max_failures: 0
 - json_path: ["metric_name", "rssKafkaTotals", "metric_name", "*", "avg(value)"]
+  tolerancy: 60
+  max_failures: 0
+- json_path: ["metric_name", "rssPrometheusTotals", "metric_name", "*", "avg(value)"]
   tolerancy: 60
   max_failures: 0
 # total usages

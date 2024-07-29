@@ -378,6 +378,26 @@
             },
             {
                 "filter": {
+                    "metric_name.keyword": "cpuPrometheusTotals"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        {
+                            "percentiles": {
+                                "percents": [
+                                    90
+                                ]
+                            }
+                        },
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
                     "metric_name.keyword": "rssFLPTotals"
                 },
                 "buckets": [
@@ -439,6 +459,26 @@
             {
                 "filter": {
                     "metric_name.keyword": "rssKafkaTotals"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        {
+                            "percentiles": {
+                                "percents": [
+                                    90
+                                ]
+                            }
+                        },
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "rssPrometheusTotals"
                 },
                 "buckets": [
                     "metric_name.keyword"
