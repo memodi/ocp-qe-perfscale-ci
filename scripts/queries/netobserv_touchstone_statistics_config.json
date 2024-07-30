@@ -228,6 +228,19 @@
             },
             {
                 "filter": {
+                    "metric_name.keyword": "nFlowsErroredRatio"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
                     "metric_name.keyword": "nFlowsErroredPerMinuteTotals"
                 },
                 "buckets": [
@@ -322,6 +335,19 @@
             {
                 "filter": {
                     "metric_name.keyword": "lokiRecordsDropped"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "lokiRecordsDroppedRatio"
                 },
                 "buckets": [
                     "metric_name.keyword"
@@ -494,6 +520,19 @@
             {
                 "filter": {
                     "metric_name.keyword": "ebpfFlowsDroppedTotals"
+                },
+                "buckets": [
+                    "metric_name.keyword"
+                ],
+                "aggregations": {
+                    "value": [
+                        "avg"
+                    ]
+                }
+            },
+            {
+                "filter": {
+                    "metric_name.keyword": "ebpfFlowsDroppedRatio"
                 },
                 "buckets": [
                     "metric_name.keyword"

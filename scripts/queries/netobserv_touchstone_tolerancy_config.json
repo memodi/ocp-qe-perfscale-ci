@@ -120,26 +120,6 @@
             },
             {
                 "filter": {
-                    "metric_name.keyword": "nFlowsProcessedPerMinuteTotals"
-                },
-                "buckets": [
-                    "metric_name.keyword"
-                ],
-                "aggregations": {
-                    "value": [
-                        {
-                            "percentiles": {
-                                "percents": [
-                                    90
-                                ]
-                            }
-                        },
-                        "avg"
-                    ]
-                }
-            },
-            {
-                "filter": {
                     "metric_name.keyword": "nWorkloadFlowsProcessedTotals"
                 },
                 "buckets": [
@@ -147,26 +127,6 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
-                    ]
-                }
-            },
-            {
-                "filter": {
-                    "metric_name.keyword": "nWorkloadFlowsProcessedPerMinuteTotals"
-                },
-                "buckets": [
-                    "metric_name.keyword"
-                ],
-                "aggregations": {
-                    "value": [
-                        {
-                            "percentiles": {
-                                "percents": [
-                                    90
-                                ]
-                            }
-                        },
                         "avg"
                     ]
                 }
@@ -186,20 +146,13 @@
             },
             {
                 "filter": {
-                    "metric_name.keyword": "nFlowsErroredPerMinuteTotals"
+                    "metric_name.keyword": "nFlowsErroredRatio"
                 },
                 "buckets": [
                     "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
-                        {
-                            "percentiles": {
-                                "percents": [
-                                    90
-                                ]
-                            }
-                        },
                         "avg"
                     ]
                 }
@@ -219,27 +172,20 @@
             },
             {
                 "filter": {
-                    "metric_name.keyword": "lokiRecordsWrittenPerMinute"
+                    "metric_name.keyword": "ebpfFlowsDroppedTotals"
                 },
                 "buckets": [
                     "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
-                        {
-                            "percentiles": {
-                                "percents": [
-                                    90
-                                ]
-                            }
-                        },
                         "avg"
                     ]
                 }
             },
             {
                 "filter": {
-                    "metric_name.keyword": "ebpfFlowsDroppedTotals"
+                    "metric_name.keyword": "ebpfFlowsDroppedRatio"
                 },
                 "buckets": [
                     "metric_name.keyword"
@@ -278,20 +224,13 @@
             },
             {
                 "filter": {
-                    "metric_name.keyword": "lokiRecordsDroppedPerMinute"
+                    "metric_name.keyword": "lokiRecordsDroppedRatio"
                 },
                 "buckets": [
                     "metric_name.keyword"
                 ],
                 "aggregations": {
                     "value": [
-                        {
-                            "percentiles": {
-                                "percents": [
-                                    90
-                                ]
-                            }
-                        },
                         "avg"
                     ]
                 }
