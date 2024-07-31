@@ -101,7 +101,7 @@
 - query: sum(rate(netobserv_agent_dropped_flows_total[1m]))
   metricName: ebpfFlowsDroppedTotals
 
-# eBPF flow drops ratio to number of evicted flows in 1 min
+# eBPF flow drops ratio to number of evicted flows in 1 min. Note that netobserv_agent_dropped_flows_total may count unaggregated flows, which might result in a high ratio not representative of the actual (aggregated) flows being dropped.
 - query: sum(rate(netobserv_agent_dropped_flows_total[1m])) / sum(rate(netobserv_agent_evicted_flows_total)[1m]) > 0.05 or on vector(0)
   metricName: ebpfFlowsDroppedRatio
 
