@@ -116,7 +116,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
