@@ -149,7 +149,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -222,7 +222,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -308,7 +308,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -341,7 +341,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -526,7 +526,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -771,7 +771,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },
@@ -784,7 +784,7 @@
                 ],
                 "aggregations": {
                     "value": [
-                        "avg"
+                        "max"
                     ]
                 }
             },

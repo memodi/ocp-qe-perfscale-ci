@@ -2,14 +2,14 @@
 - json_path: ["metric_name", "nFlowsProcessedTotals", "metric_name", "*", "max(value)"]
   tolerancy: -10
   max_failures: 0
-- json_path: ["metric_name", "nWorkloadFlowsProcessedTotals", "metric_name", "*", "avg(value)"]
+- json_path: ["metric_name", "nWorkloadFlowsProcessedTotals", "metric_name", "*", "max(value)"]
+  tolerancy: -10
+  max_failures: 0
+- json_path: ["metric_name", "lokiRecordsWritten", "metric_name", "*", "max(value)"]
   tolerancy: -10
   max_failures: 0
 - json_path: ["metric_name", "nFlowsErroredRatio", "metric_name", "*", "avg(value)"]
   tolerancy: 5
-  max_failures: 0
-- json_path: ["metric_name", "lokiRecordsWritten", "metric_name", "*", "avg(value)"]
-  tolerancy: -10
   max_failures: 0
 - json_path: ["metric_name", "lokiRecordsDroppedRatio", "metric_name", "*", "avg(value)"]
   tolerancy: 5
