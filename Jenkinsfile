@@ -412,37 +412,6 @@ pipeline {
                     if (params.INSTALLATION_SOURCE == 'None' && params.NOPE_JIRA == ''){
                         error('Specify context of this perf run using NOPE_JIRA parameter')
                     }
-                                        // if an 'Internal' installation, determine whether to use aosqe-index image or specific IIB image
-                    if (params.INSTALLATION_SOURCE == 'Internal') {
-                        if (params.IIB_OVERRIDE != '') {
-                            env.DOWNSTREAM_IMAGE = "brew.registry.redhat.io/rh-osbs/iib:${params.IIB_OVERRIDE}"
-                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
-                        }
-                        else {
-                            env.DOWNSTREAM_IMAGE = "quay.io/openshift-qe-optional-operators/aosqe-index:v${env.MAJOR_VERSION}.${env.MINOR_VERSION}"
-                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
-                        }
-                    }
-                    if (params.INSTALLATION_SOURCE == 'Official') {
-                        env.CATALOG_IMAGE = sh(returnStdout: true, script: """
-                        oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image
-                        """).trim()
-                    }
-                    // if a 'Source' installation, determine whether to use main image or specific premerge image
-                    if (params.INSTALLATION_SOURCE == 'Source') {
-                        if (params.OPERATOR_PREMERGE_OVERRIDE != '') {
-                            env.UPSTREAM_IMAGE = "quay.io/netobserv/network-observability-operator-catalog:v0.0.0-${OPERATOR_PREMERGE_OVERRIDE}"
-                            env.CATALOG_IMAGE=env.UPSTREAM_IMAGE
-                            NOO_BUNDLE_VERSION="v0.0.0-${OPERATOR_PREMERGE_OVERRIDE}"
-                        }
-                        else {
-                            env.UPSTREAM_IMAGE = "quay.io/netobserv/network-observability-operator-catalog:v0.0.0-main"
-                            env.CATALOG_IMAGE=env.UPSTREAM_IMAGE
-                            NOO_BUNDLE_VERSION="v0.0.0-main"
-                        }
-                        println("Using NOO Bundle version: ${NOO_BUNDLE_VERSION}")
-                        currentBuild.description += "NetObserv Bundle Version: <b>${NOO_BUNDLE_VERSION}</b><br/>"
-                    }
                     println('Job params are valid - continuing execution...')
                 }
             }
@@ -564,6 +533,45 @@ pipeline {
                             oc get pods -n openshift-operators-redhat
                             oc get pods -n netobserv
                         ''')
+                    }
+                }
+            }
+        }
+        stage('Set Catalog Image') {
+            when {
+                expression { params.INSTALLATION_SOURCE != 'None' }
+            }
+            steps {
+                script {
+                    // if an 'Internal' installation, determine whether to use aosqe-index image or specific IIB image
+                    if (params.INSTALLATION_SOURCE == 'Internal') {
+                        if (params.IIB_OVERRIDE != '') {
+                            env.DOWNSTREAM_IMAGE = "brew.registry.redhat.io/rh-osbs/iib:${params.IIB_OVERRIDE}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
+                        else {
+                            env.DOWNSTREAM_IMAGE = "quay.io/openshift-qe-optional-operators/aosqe-index:v${env.MAJOR_VERSION}.${env.MINOR_VERSION}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
+                    }
+                    if (params.INSTALLATION_SOURCE == 'Official') {
+                        env.CATALOG_IMAGE = sh(returnStdout: true, script: """
+                        oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}'""").trim()
+                    }
+                    // if a 'Source' installation, determine whether to use main image or specific premerge image
+                    if (params.INSTALLATION_SOURCE == 'Source') {
+                        if (params.OPERATOR_PREMERGE_OVERRIDE != '') {
+                            env.UPSTREAM_IMAGE = "quay.io/netobserv/network-observability-operator-catalog:v0.0.0-${OPERATOR_PREMERGE_OVERRIDE}"
+                            env.CATALOG_IMAGE=env.UPSTREAM_IMAGE
+                            NOO_BUNDLE_VERSION="v0.0.0-${OPERATOR_PREMERGE_OVERRIDE}"
+                        }
+                        else {
+                            env.UPSTREAM_IMAGE = "quay.io/netobserv/network-observability-operator-catalog:v0.0.0-main"
+                            env.CATALOG_IMAGE=env.UPSTREAM_IMAGE
+                            NOO_BUNDLE_VERSION="v0.0.0-main"
+                        }
+                        println("Using NOO Bundle version: ${NOO_BUNDLE_VERSION}")
+                        currentBuild.description += "NetObserv Bundle Version: <b>${NOO_BUNDLE_VERSION}</b><br/>"
                     }
                 }
             }
