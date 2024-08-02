@@ -224,11 +224,7 @@ pipeline {
             name: 'TOPIC_PARTITIONS',
             choices: [6, 10, 24, 48],
             description: '''
-                Number of Kafka Topic Partitions. Below are recommended values for partitions:<br/>
-                6 - default for non-perf testing environments<br/>
-                10 - Perf testing with worker nodes <= 20<br/>
-                24 - Perf testing with worker nodes <= 50<br/>
-                48 - Perf testing with worker nodes <= 100<br/>
+                Number of Kafka Topic Partitions. 48 Partitions are used for all Perf testing scenarios<br/>
             '''
         )
         string(
