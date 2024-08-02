@@ -537,7 +537,7 @@ pipeline {
                 }
             }
         }
-        stage('Set Catalog Image') {
+        stage('Install NetObserv Operator') {
             when {
                 expression { params.INSTALLATION_SOURCE != 'None' }
             }
@@ -554,9 +554,11 @@ pipeline {
                             env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
                         }
                     }
-                    // if (params.INSTALLATION_SOURCE == 'Official') {
-                    //     env.CATALOG_IMAGE = sh(returnStdout: true, script: "oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}'").trim()
-                    // }
+
+                    if (params.INSTALLATION_SOURCE == 'Official') {
+                        env.CATALOG_IMAGE = sh(returnStdout: true, script: "oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}'").trim()
+                    }
+
                     // if a 'Source' installation, determine whether to use main image or specific premerge image
                     if (params.INSTALLATION_SOURCE == 'Source') {
                         if (params.OPERATOR_PREMERGE_OVERRIDE != '') {
@@ -572,15 +574,6 @@ pipeline {
                         println("Using NOO Bundle version: ${NOO_BUNDLE_VERSION}")
                         currentBuild.description += "NetObserv Bundle Version: <b>${NOO_BUNDLE_VERSION}</b><br/>"
                     }
-                }
-            }
-        }
-        stage('Install NetObserv Operator') {
-            when {
-                expression { params.INSTALLATION_SOURCE != 'None' }
-            }
-            steps {
-                script {
                     // attempt installation of Network Observability from selected source
                     println("Installing Network Observability from ${params.INSTALLATION_SOURCE}...")
                     netobservReturnCode = sh(returnStatus: true, script: """
@@ -664,18 +657,7 @@ pipeline {
                         sh 'podman login -u $REG_STAGE_USER -p $REG_STAGE_PASSWORD registry.stage.redhat.io'
                     }
 
-                    NOO_BUNDLE_VERSION=sh(returnStdout: true, script: '''
-                            #!/usr/bin/env bash
-                            mkdir -p ~/.kube
-                            cp ${WORKSPACE}/flexy-artifacts/workdir/install-dir/auth/kubeconfig ~/.kube/config
-                            RELEASE=$(oc get pods -l app=netobserv-operator -o jsonpath='{.items[*].spec.containers[1].env[0].value}' -A | cut -d 'v' -f 3)
-
-                            # source from 4.12 because jenkins agent are on RHEL 8
-                            curl -sL "https://mirror2.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.12/opm-linux.tar.gz" -o opm-linux.tar.gz
-                            tar xf opm-linux.tar.gz
-                            BUNDLE_IMAGE=$(./opm alpha list bundles $CATALOG_IMAGE netobserv-operator | grep $RELEASE | awk '{print $5}')
-                            oc image info $BUNDLE_IMAGE -o json --filter-by-os linux/amd64 | jq '.config.config.Labels.url' | awk -F '/' '{print $NF}' | tr '\"' ' '
-                        ''').trim()
+                    NOO_BUNDLE_VERSION=sh(returnStdout: true, script: "${WORKSPACE}/ocp-qe-perfscale-ci/scripts/build_info.sh ${WORKSPACE}/flexy-artifacts/workdir/install-dir/auth/kubeconfig").trim()
                     if (NOO_BUNDLE_VERSION != '') {
                         println("Found NOO Bundle version: ${NOO_BUNDLE_VERSION}")
                         currentBuild.description += "NetObserv Bundle Version: <b>${NOO_BUNDLE_VERSION}</b><br/>"
