@@ -554,9 +554,9 @@ pipeline {
                             env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
                         }
                     }
-                    if (params.INSTALLATION_SOURCE == 'Official') {
-                        env.CATALOG_IMAGE = sh(returnStdout: true, script: "oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}'").trim()
-                    }
+                    // if (params.INSTALLATION_SOURCE == 'Official') {
+                    //     env.CATALOG_IMAGE = sh(returnStdout: true, script: "oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}'").trim()
+                    // }
                     // if a 'Source' installation, determine whether to use main image or specific premerge image
                     if (params.INSTALLATION_SOURCE == 'Source') {
                         if (params.OPERATOR_PREMERGE_OVERRIDE != '') {
