@@ -544,13 +544,18 @@ pipeline {
             steps {
                 script {
                     // if an 'Internal' installation, determine whether to use aosqe-index image or specific IIB image
-                    if (params.INSTALLATION_SOURCE == 'Internal' && params.IIB_OVERRIDE != '') {
-                        env.DOWNSTREAM_IMAGE = "brew.registry.redhat.io/rh-osbs/iib:${params.IIB_OVERRIDE}"
-                        env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                    if (params.INSTALLATION_SOURCE == 'Internal') {
+                        if (params.IIB_OVERRIDE != '') {
+                            env.DOWNSTREAM_IMAGE = "brew.registry.redhat.io/rh-osbs/iib:${params.IIB_OVERRIDE}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
+                        else {
+                            env.DOWNSTREAM_IMAGE = "quay.io/openshift-qe-optional-operators/aosqe-index:v${env.MAJOR_VERSION}.${env.MINOR_VERSION}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
                     }
-                    else {
-                        env.DOWNSTREAM_IMAGE = "quay.io/openshift-qe-optional-operators/aosqe-index:v${env.MAJOR_VERSION}.${env.MINOR_VERSION}"
-                        env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                    if (params.INSTALLATION_SOURCE == "Official") {
+                        env.CATALOG_IMAGE = sh(returnStdout: true, script: "oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath={'.spec.image}'").trim()
                     }
                     // if a 'Source' installation, determine whether to use main image or specific premerge image
                     if (params.INSTALLATION_SOURCE == 'Source') {
