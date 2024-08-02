@@ -554,12 +554,22 @@ pipeline {
                             env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
                         }
                     }
-                    if (params.INSTALLATION_SOURCE == 'Official') {
-                        def CATALOG_IMAGE = sh(returnStdout: true, script: """
-                        oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image
-                        """).trim()
-                        env.CATALOG_IMAGE="${CATALOG_IMAGE}"
+                    if (params.INSTALLATION_SOURCE == 'Internal') {
+                        if (params.IIB_OVERRIDE != '') {
+                            env.DOWNSTREAM_IMAGE = "brew.registry.redhat.io/rh-osbs/iib:${params.IIB_OVERRIDE}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
+                        else {
+                            env.DOWNSTREAM_IMAGE = "quay.io/openshift-qe-optional-operators/aosqe-index:v${env.MAJOR_VERSION}.${env.MINOR_VERSION}"
+                            env.CATALOG_IMAGE=env.DOWNSTREAM_IMAGE
+                        }
                     }
+                    // if (params.INSTALLATION_SOURCE == 'Official') {
+                    //     def CATALOG_IMAGE = sh(returnStdout: true, script: """
+                    //     oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image
+                    //     """).trim()
+                    //     env.CATALOG_IMAGE="${CATALOG_IMAGE}"
+                    // }
                     // if a 'Source' installation, determine whether to use main image or specific premerge image
                     if (params.INSTALLATION_SOURCE == 'Source') {
                         if (params.OPERATOR_PREMERGE_OVERRIDE != '') {
