@@ -555,7 +555,9 @@ pipeline {
                         }
                     }
                     if (params.INSTALLATION_SOURCE == 'Official') {
-                        def CATALOG_IMAGE = sh(returnStdout: true, script: """oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image}""").trim()
+                        def CATALOG_IMAGE = sh(returnStdout: true, script: """
+                        oc get catalogsource/redhat-operators -n openshift-marketplace -o jsonpath='{.spec.image
+                        """).trim()
                         env.CATALOG_IMAGE="${CATALOG_IMAGE}"
                     }
                     // if a 'Source' installation, determine whether to use main image or specific premerge image
