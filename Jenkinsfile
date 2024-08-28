@@ -421,9 +421,10 @@ pipeline {
 
                             # source from 4.12 because jenkins agent are on RHEL 8
                             curl -sL "https://mirror2.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.16/opm-linux.tar.gz" -o opm-linux.tar.gz
-                            tar xf opm-linux.tar.gz
-                            ./opm alpha list bundles 'quay.io/openshift-qe-optional-operators/aosqe-index:v4.17' netobserv-operator
-                            BUNDLE_IMAGE=$(./opm alpha list bundles quay.io/openshift-qe-optional-operators/aosqe-index:v4.17 netobserv-operator | grep 1.7.0 | awk '{print $5}')
+                            tar xzvf opm-linux.tar.gz
+                            ls
+                            ./opm-rhel8 alpha list bundles 'quay.io/openshift-qe-optional-operators/aosqe-index:v4.17' netobserv-operator
+                            BUNDLE_IMAGE=$(./opm-rhel8 alpha list bundles quay.io/openshift-qe-optional-operators/aosqe-index:v4.17 netobserv-operator | grep 1.7.0 | awk '{print $5}')
                             oc image info $BUNDLE_IMAGE -o json --filter-by-os linux/amd64 | jq '.config.config.Labels.url' | awk -F '/' '{print $NF}' | tr '\"' ' '
                         ''').trim()
                     if (NOO_BUNDLE_VERSION != '') {
