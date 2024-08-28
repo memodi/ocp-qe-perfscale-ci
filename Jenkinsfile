@@ -420,7 +420,7 @@ pipeline {
                             RELEASE=$(oc get pods -l app=netobserv-operator -o jsonpath='{.items[*].spec.containers[1].env[0].value}' -A | cut -d 'v' -f 3)
 
                             # source from 4.12 because jenkins agent are on RHEL 8
-                            curl -sL "https://mirror2.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.12/opm-linux.tar.gz" -o opm-linux.tar.gz
+                            curl -sL "https://mirror2.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.16/opm-linux.tar.gz" -o opm-linux.tar.gz
                             tar xf opm-linux.tar.gz
                             ./opm alpha list bundles 'quay.io/openshift-qe-optional-operators/aosqe-index:v4.17' netobserv-operator
                             BUNDLE_IMAGE=$(./opm alpha list bundles quay.io/openshift-qe-optional-operators/aosqe-index:v4.17 netobserv-operator | grep 1.7.0 | awk '{print $5}')
