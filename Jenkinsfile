@@ -207,7 +207,7 @@ pipeline {
             defaultValue: '',
             description: '''
                 Replicas should be at least half the number of Kafka TOPIC_PARTITIONS and should not exceed number of TOPIC_PARTITIONS or number of nodes:<br/>
-                <b>Leave this empty if you're triggering standard perf-workloads, default of 6, 12 and 18 FLP_KAFKA_REPLICAS will be used for node-density-heavy, ingress-perf and cluster-density-v2 workloads respectively</b><br/>
+                <b>Leave this empty if you're triggering standard perf-workloads, default of 6, 12 and 18 FLP_KAFKA_REPLICAS will be used for node-density-(heavy|cni), ingress-perf and cluster-density-v2 workloads respectively</b><br/>
                 3 - for non-perf testing environments<br/>
                 <b>Use this field to overwrite default FLP_KAFKA_REPLICAS</b><br/>
             '''
@@ -223,10 +223,10 @@ pipeline {
         )
         choice(
             name: 'WORKLOAD',
-            choices: ['None', 'cluster-density-v2', 'node-density-heavy', 'ingress-perf'],
+            choices: ['None', 'cluster-density-v2', 'node-density-heavy', 'node-density-cni', 'ingress-perf'],
             description: '''
                 Workload to run on Netobserv-enabled cluster<br/>
-                "cluster-density-v2" and "node-density-heavy" options will trigger "kube-burner-ocp" job<br/>
+                "cluster-density-v2" and "node-density-(heavy|cni)" options will trigger "kube-burner-ocp" job<br/>
                 "ingress-perf" will trigger "ingress-perf" job<br/>
                 "None" will run no workload<br/>
                 For additional guidance on configuring workloads, see <a href=https://docs.google.com/spreadsheets/d/1DdFiJkCMA4c35WQT2SWXbdiHeCCcAZYjnv6wNpsEhIA/edit?usp=sharing#gid=1506806462>here</a>
@@ -238,7 +238,7 @@ pipeline {
             description: '''
                 This variable configures parameter needed for each type of workload. <b>Not used by <b><a href=https://github.com/cloud-bulldozer/e2e-benchmarking/blob/master/workloads/ingress-perf/README.md>ingress-perf</a> workload</b>.<br/>
                 <a href=https://github.com/cloud-bulldozer/e2e-benchmarking/blob/master/workloads/kube-burner/README.md>cluster-density-v2</a>: This will export JOB_ITERATIONS env variable; set to 4 * num_workers. This variable sets the number of iterations to perform (1 namespace per iteration).<br/>
-                <a href=https://github.com/cloud-bulldozer/e2e-benchmarking/blob/master/workloads/kube-burner/README.md>node-density-heavy</a>: This will export PODS_PER_NODE env variable; set to 200, work up to 250. Creates this number of applications proportional to the calculated number of pods / 2<br/>
+                <a href=https://github.com/cloud-bulldozer/e2e-benchmarking/blob/master/workloads/kube-burner/README.md>node-density-(heavy|cni)</a>: This will export PODS_PER_NODE env variable; set to 200, work up to 250. Creates this number of applications proportional to the calculated number of pods / 2<br/>
                 Read <a href=https://github.com/openshift-qe/ocp-qe-perfscale-ci/tree/kube-burner/README.md>here</a> for details about each variable
             '''
         )
@@ -246,7 +246,7 @@ pipeline {
             name: 'NODE_COUNT',
             defaultValue: '3',
             description: '''
-                Only for <b>node-density-heavy</b><br/>
+                Only for <b>node-density-(heavy|cni)</b><br/>
                 Should be the number of worker nodes on your cluster (after scaling)
             '''
         )
@@ -1052,7 +1052,7 @@ def validateParams() {
 
 def setKafkaReplicas(){
     if (params.FLP_KAFKA_REPLICAS == "") {
-        if (params.WORKLOAD == 'node-density-heavy') {
+        if (params.WORKLOAD == 'node-density-heavy' || params.WORKLOAD == 'node-density-cni') {
             env.FLP_KAFKA_REPLICAS = '6'
         }
         else if (params.WORKLOAD == 'ingress-perf') {

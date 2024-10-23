@@ -52,6 +52,7 @@ NOO_BUNDLE_VERSION = None
 UUID = None
 SUPPORTED_WORKLOADS = [
     "node-density-heavy",
+    "node-density-cni",
     "ingress-perf",
     "cluster-density-v2",
 ]

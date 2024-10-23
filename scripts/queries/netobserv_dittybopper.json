@@ -147,7 +147,7 @@
             "uid": "$Datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(netobserv_namespace_flows_total{SrcK8S_Namespace=~\"node-density-heavy.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
+          "expr": "sum(rate(netobserv_namespace_flows_total{SrcK8S_Namespace=~\"node-density.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
           "hide": false,
           "interval": "",
           "legendFormat": "Workload flows generated/s",
@@ -159,7 +159,7 @@
             "uid": "$Datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(netobserv_namespace_flows_total{SrcK8S_Namespace!~\"node-density-heavy.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
+          "expr": "sum(rate(netobserv_namespace_flows_total{SrcK8S_Namespace!~\"node-density.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
           "hide": false,
           "interval": "",
           "legendFormat": "Other flows generated/s",
@@ -250,7 +250,7 @@
             "uid": "$Datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(netobserv_workload_ingress_bytes_total{SrcK8S_Namespace=~\"node-density-heavy.*|ingress-perf|cluster-density.*\", DstK8S_OwnerType=\"Deployment\"}[1m])) OR on() vector(0)",
+          "expr": "sum(rate(netobserv_workload_ingress_bytes_total{SrcK8S_Namespace=~\"node-density.*|ingress-perf|cluster-density.*\", DstK8S_OwnerType=\"Deployment\"}[1m])) OR on() vector(0)",
           "hide": false,
           "interval": "",
           "legendFormat": "Workload bytes sent to NetObserv/s",
@@ -262,7 +262,7 @@
             "uid": "$Datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"\", namespace=~\"node-density-heavy.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
+          "expr": "sum(rate(container_network_receive_bytes_total{job=\"kubelet\", metrics_path=\"/metrics/cadvisor\", cluster=\"\", namespace=~\"node-density.*|ingress-perf|cluster-density.*\"}[1m])) OR on() vector(0)",
           "hide": false,
           "interval": "",
           "legendFormat": "Workload bytes sent elsewhere/s",
