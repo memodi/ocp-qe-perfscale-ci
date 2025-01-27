@@ -24,7 +24,6 @@ objects:
           - DNSTracking
           - FlowRTT
           - NetworkEvents
-          - PacketTranslation
           flowFilter:
             action: Accept
             cidr: 0.0.0.0/0
