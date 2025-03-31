@@ -1,8 +1,3 @@
-def getTimestamp(isodate) {
-    def command="date -d ${isodate} +%s"
-    def timestamp = sh(script: command, returnStdout: true).trim()
-    return timestamp
-}
 
 pipeline {
     environment {
